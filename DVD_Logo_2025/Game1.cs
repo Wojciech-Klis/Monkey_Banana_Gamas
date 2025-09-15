@@ -86,7 +86,6 @@ namespace DVD_Logo_2025
                 _logoYPos -= 2;
             }
 
-
             base.Update(gameTime);
         }
 
