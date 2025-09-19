@@ -10,14 +10,16 @@ namespace DVD_Logo_2025
     {
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private Texture2D _logo;
-        private Texture2D _logo2;
-        private int _logoWidth = 100;
-        private int _logoHeight = 50;
-        private int _logoXPos;
-        private int _logoYPos;
-        private int _logo2XPos;
-        private int _logo2YPos;
+        private Texture2D _monkey;
+        private Texture2D _banan;
+        private int _monkeyWidth = 200;
+        private int _monkeyHeight = 200;
+        private int _bananWidth = 120;
+        private int _bananHeight = 120;
+        private int _monkeyXPos;
+        private int _monkeyYPos;
+        private int _bananXPos;
+        private int _bananYPos;
         private double _elapsed;
         Random _random = new Random();
         Stopwatch stopwatch = new();
@@ -27,13 +29,13 @@ namespace DVD_Logo_2025
             _graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-            _graphics.PreferredBackBufferWidth = 1280;
-            _graphics.PreferredBackBufferHeight = 720;
+            _graphics.PreferredBackBufferWidth = 1920;
+            _graphics.PreferredBackBufferHeight = 1080;
 
-            _logoXPos = (_graphics.PreferredBackBufferWidth / 2) - _logoWidth;
-            _logoYPos = (_graphics.PreferredBackBufferHeight / 2) - _logoHeight;
-            _logo2XPos = (_graphics.PreferredBackBufferWidth / 2) - _logoWidth;
-            _logo2YPos = (_graphics.PreferredBackBufferHeight / 2) - _logoHeight;
+            _monkeyXPos = (_graphics.PreferredBackBufferWidth / 2) - _monkeyWidth;
+            _monkeyYPos = (_graphics.PreferredBackBufferHeight / 2) - _monkeyHeight;
+            _bananXPos = (_graphics.PreferredBackBufferWidth / 2) - _monkeyWidth;
+            _bananYPos = (_graphics.PreferredBackBufferHeight / 2) - _monkeyHeight;
 
             Stopwatch.StartNew();
 
@@ -51,8 +53,8 @@ namespace DVD_Logo_2025
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-            _logo = Content.Load<Texture2D>("dvd-logo-black-and-white");
-            _logo2 = Content.Load<Texture2D>("dvd-logo-black-and-white");
+            _monkey = Content.Load<Texture2D>("monkey");
+            _banan = Content.Load<Texture2D>("banan");
         }
 
         protected override void Update(GameTime gameTime)
@@ -64,43 +66,43 @@ namespace DVD_Logo_2025
 
             // TODO: Add your update logic here
             
-            int _randomY = _random.Next(0, _graphics.PreferredBackBufferHeight - _logoHeight);
-            int _randomX = _random.Next(0, _graphics.PreferredBackBufferWidth - _logoWidth);
+            int _randomY = _random.Next(0, _graphics.PreferredBackBufferHeight - _monkeyHeight);
+            int _randomX = _random.Next(0, _graphics.PreferredBackBufferWidth - _monkeyWidth);
             
             Debug.WriteLine(_elapsed);
             
             if (_elapsed >= 6)
             {
-                _logo2YPos = _randomY;
-                _logo2XPos = _randomX;
+                _bananYPos = _randomY;
+                _bananXPos = _randomX;
                 _elapsed = 0;
             }
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                if (_logoXPos > 0)
+                if (_monkeyXPos > 0)
                 {
-                    _logoXPos -= 5;
+                    _monkeyXPos -= 5;
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                if (_logoXPos + _logoWidth <= _graphics.PreferredBackBufferWidth)
+                if (_monkeyXPos + _monkeyWidth <= _graphics.PreferredBackBufferWidth)
                 {
-                    _logoXPos += 5;
+                    _monkeyXPos += 5;
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                if (_logoYPos > 0)
+                if (_monkeyYPos > 0)
                 {
-                    _logoYPos -= 5;
+                    _monkeyYPos -= 5;
                 }
             }
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                if (_logoYPos + _logoHeight <= _graphics.PreferredBackBufferHeight)
+                if (_monkeyYPos + _monkeyHeight <= _graphics.PreferredBackBufferHeight)
                 {
-                    _logoYPos += 5;
+                    _monkeyYPos += 5;
                 }
             }
             base.Update(gameTime);
@@ -108,12 +110,12 @@ namespace DVD_Logo_2025
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.CornflowerBlue);
+            GraphicsDevice.Clear(Color.Black);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_logo, new Rectangle(_logoXPos, _logoYPos, _logoWidth, _logoHeight), Color.White);
-            _spriteBatch.Draw(_logo2, new Rectangle(_logo2XPos, _logo2YPos, _logoWidth, _logoHeight), Color.Red);
+            _spriteBatch.Draw(_monkey, new Rectangle(_monkeyXPos, _monkeyYPos, _monkeyWidth, _monkeyHeight), Color.White);
+            _spriteBatch.Draw(_banan, new Rectangle(_bananXPos, _bananYPos, _bananWidth, _bananHeight), Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
