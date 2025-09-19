@@ -1,5 +1,7 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
+using Microsoft.Xna.Framework;
+using System.Diagnostics;
+using System;
 using Microsoft.Xna.Framework.Input;
 
 namespace DVD_Logo_2025
@@ -9,10 +11,16 @@ namespace DVD_Logo_2025
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private Texture2D _logo;
-        private int _logoXPos = 0;
-        private int _logoYPos = 0;
-        private bool _logoXPosState = true;
-        private bool _logoYPosState = true;
+        private Texture2D _logo2;
+        private int _logoWidth = 100;
+        private int _logoHeight = 50;
+        private int _logoXPos;
+        private int _logoYPos;
+        private int _logo2XPos;
+        private int _logo2YPos;
+        private double _elapsed;
+        Random _random = new Random();
+        Stopwatch stopwatch = new();
 
         public Game1()
         {
@@ -21,6 +29,14 @@ namespace DVD_Logo_2025
             IsMouseVisible = true;
             _graphics.PreferredBackBufferWidth = 1280;
             _graphics.PreferredBackBufferHeight = 720;
+
+            _logoXPos = (_graphics.PreferredBackBufferWidth / 2) - _logoWidth;
+            _logoYPos = (_graphics.PreferredBackBufferHeight / 2) - _logoHeight;
+            _logo2XPos = (_graphics.PreferredBackBufferWidth / 2) - _logoWidth;
+            _logo2YPos = (_graphics.PreferredBackBufferHeight / 2) - _logoHeight;
+
+            Stopwatch.StartNew();
+
         }
 
         protected override void Initialize()
@@ -35,57 +51,58 @@ namespace DVD_Logo_2025
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
-
             _logo = Content.Load<Texture2D>("dvd-logo-black-and-white");
+            _logo2 = Content.Load<Texture2D>("dvd-logo-black-and-white");
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
+            if (Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            _elapsed += gameTime.ElapsedGameTime.TotalSeconds;
+
             // TODO: Add your update logic here
-
-            if (_logoXPos == 0)
+            
+            int _randomY = _random.Next(0, _graphics.PreferredBackBufferHeight - _logoHeight);
+            int _randomX = _random.Next(0, _graphics.PreferredBackBufferWidth - _logoWidth);
+            
+            Debug.WriteLine(_elapsed);
+            
+            if (_elapsed >= 6)
             {
-                _logoXPosState = true;
+                _logo2YPos = _randomY;
+                _logo2XPos = _randomX;
+                _elapsed = 0;
             }
-
-            else if (_logoXPos == 1130)
+            if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
-                _logoXPosState = false;
+                if (_logoXPos > 0)
+                {
+                    _logoXPos -= 5;
+                }
             }
-
-            if (_logoYPos == -40)
+            if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
-                _logoYPosState = true;
+                if (_logoXPos + _logoWidth <= _graphics.PreferredBackBufferWidth)
+                {
+                    _logoXPos += 5;
+                }
             }
-
-            else if (_logoYPos == 610)
+            if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
-                _logoYPosState = false;
+                if (_logoYPos > 0)
+                {
+                    _logoYPos -= 5;
+                }
             }
-
-            if (_logoXPosState == true)
+            if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
-                _logoXPos += 2;
+                if (_logoYPos + _logoHeight <= _graphics.PreferredBackBufferHeight)
+                {
+                    _logoYPos += 5;
+                }
             }
-
-            else if(_logoXPosState == false)
-            {
-                _logoXPos -= 2;
-            }
-
-            if(_logoYPosState == true)
-            {
-                _logoYPos += 2;
-            }
-
-            else if(_logoYPosState == false)
-            {
-                _logoYPos -= 2;
-            }
-
             base.Update(gameTime);
         }
 
@@ -94,13 +111,10 @@ namespace DVD_Logo_2025
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
-            
             _spriteBatch.Begin();
-
-            _spriteBatch.Draw(_logo, new Rectangle(_logoXPos, _logoYPos, 150, 150), Color.White);
-
+            _spriteBatch.Draw(_logo, new Rectangle(_logoXPos, _logoYPos, _logoWidth, _logoHeight), Color.White);
+            _spriteBatch.Draw(_logo2, new Rectangle(_logo2XPos, _logo2YPos, _logoWidth, _logoHeight), Color.Red);
             _spriteBatch.End();
-
 
             base.Draw(gameTime);
         }
