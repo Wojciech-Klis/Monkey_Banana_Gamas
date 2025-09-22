@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using System.Diagnostics;
 using System;
 using Microsoft.Xna.Framework.Input;
+using System.Xml.Linq;
 
 namespace Monkey_Banana_Gamas
 {
@@ -20,9 +21,13 @@ namespace Monkey_Banana_Gamas
         private int _monkeyYPos;
         private int _bananXPos;
         private int _bananYPos;
+        private Vector2 _scorePos;
+        private int score = -1;
+        private Rectangle _monkeyRectangle, _bananRectangle;
         private double _elapsed;
         Random _random = new Random();
         Stopwatch stopwatch = new();
+        private SpriteFont _score;
 
         public Game1()
         {
@@ -55,6 +60,10 @@ namespace Monkey_Banana_Gamas
             // TODO: use this.Content to load your game content here
             _monkey = Content.Load<Texture2D>("monkey");
             _banan = Content.Load<Texture2D>("banan");
+            _score = Content.Load<SpriteFont>("myScore");
+
+            _monkeyRectangle = new Rectangle(_monkeyXPos, _monkeyYPos, _monkeyWidth, _monkeyHeight);
+            _bananRectangle = new Rectangle(_bananXPos, _bananYPos, _bananWidth, _bananHeight);
         }
 
         protected override void Update(GameTime gameTime)
@@ -77,6 +86,15 @@ namespace Monkey_Banana_Gamas
                 _bananXPos = _randomX;
                 _elapsed = 0;
             }
+
+            if(_monkeyRectangle.Intersects(_bananRectangle))
+            {
+                _bananYPos = _randomY;
+                _bananXPos = _randomX;
+                _elapsed = 0;
+                score += 1;
+            }
+
             if (Keyboard.GetState().IsKeyDown(Keys.A))
             {
                 if (_monkeyXPos > 0)
@@ -84,6 +102,7 @@ namespace Monkey_Banana_Gamas
                     _monkeyXPos -= 5;
                 }
             }
+
             if (Keyboard.GetState().IsKeyDown(Keys.D))
             {
                 if (_monkeyXPos + _monkeyWidth <= _graphics.PreferredBackBufferWidth)
@@ -91,6 +110,7 @@ namespace Monkey_Banana_Gamas
                     _monkeyXPos += 5;
                 }
             }
+
             if (Keyboard.GetState().IsKeyDown(Keys.W))
             {
                 if (_monkeyYPos > 0)
@@ -98,6 +118,7 @@ namespace Monkey_Banana_Gamas
                     _monkeyYPos -= 5;
                 }
             }
+
             if (Keyboard.GetState().IsKeyDown(Keys.S))
             {
                 if (_monkeyYPos + _monkeyHeight <= _graphics.PreferredBackBufferHeight)
@@ -105,17 +126,24 @@ namespace Monkey_Banana_Gamas
                     _monkeyYPos += 5;
                 }
             }
+
+            _monkeyRectangle.X = _monkeyXPos;
+            _monkeyRectangle.Y = _monkeyYPos;
+            _bananRectangle.X = _bananXPos;
+            _bananRectangle.Y = _bananYPos;
+
             base.Update(gameTime);
         }
 
         protected override void Draw(GameTime gameTime)
         {
-            GraphicsDevice.Clear(Color.Black);
+            GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            _spriteBatch.Draw(_monkey, new Rectangle(_monkeyXPos, _monkeyYPos, _monkeyWidth, _monkeyHeight), Color.White);
-            _spriteBatch.Draw(_banan, new Rectangle(_bananXPos, _bananYPos, _bananWidth, _bananHeight), Color.White);
+            _spriteBatch.Draw(_monkey, _monkeyRectangle, Color.White);
+            _spriteBatch.Draw(_banan, _bananRectangle, Color.White);
+            _spriteBatch.DrawString(_score, $"Score: {score}", _scorePos, Color.White);
             _spriteBatch.End();
 
             base.Draw(gameTime);
